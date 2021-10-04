@@ -70,7 +70,7 @@ router.get("/programs/resources", async (req, res) => {
 	try {
 		const { programType } = req.query
 		const key = `programType.${ programType }`;
-		const programs = await Program.find({ [key]: true });
+		const programs = await Program.find({ [key]: true, approved: true });
 		console.log('programs: ', programs, programType);
 		res.send({ message: programs });
 	} catch (error) {
@@ -124,6 +124,17 @@ router.delete("/programs/erase-all", async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		res.send({ message: error });
+	}
+})
+
+router.delete("/program/:href", async (req, res) => {
+	try {
+		const response = await Program.deleteOne({ href: req.params.href }); 
+		res.send({ message: 'success', status: 204 }); 
+		console.log(response); 
+	} catch (error) {
+		console.log('ERROR IN DELETE HREF: ', error); 
+		res.send({ message: error, error: true })
 	}
 })
 
